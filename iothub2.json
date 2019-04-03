@@ -34,28 +34,7 @@
                     }
                 },
                 "ipFilterRules": [],
-                "eventHubEndpoints": {
-                    "events": {
-                        "retentionTimeInDays": 1,
-                        "partitionCount": 2,
-                        "partitionIds": [
-                            "0",
-                            "1"
-                        ],
-                        "path": "iothub-ehub-testingver-1475520-b4e9250a1b",
-                        "endpoint": "sb://ihsuprodamres085dednamespace.servicebus.windows.net/"
-                    },
-                    "operationsMonitoringEvents": {
-                        "retentionTimeInDays": 1,
-                        "partitionCount": 2,
-                        "partitionIds": [
-                            "0",
-                            "1"
-                        ],
-                        "path": "iothub-ehub-testingver-1475520-7e32e16c5c",
-                        "endpoint": "sb://ihsuprodamres076dednamespace.servicebus.windows.net/"
-                    }
-                },
+                "eventHubEndpoints": {},
                 "routing": {
                     "endpoints": {
                         "serviceBusQueues": [],
@@ -69,7 +48,7 @@
                                 "batchFrequencyInSeconds": 100,
                                 "maxChunkSizeInBytes": 104857600,
                                 "encoding": "avro",
-                                "name": "routeToEventhub",
+                                "name": "testingov",
                                 "subscriptionId": "a6e10cb0-79e5-4b68-af13-d17fc5f7505a",
                                 "resourceGroup": "testingVerhaegheO04"
                             }
@@ -81,7 +60,7 @@
                             "source": "TwinChangeEvents",
                             "condition": "true",
                             "endpointNames": [
-                                "routeToEventhub"
+                                "testingov"
                             ],
                             "isEnabled": true
                         }
