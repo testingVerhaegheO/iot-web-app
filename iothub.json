@@ -2,43 +2,147 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "name": {
+        "iothubName": {
+            "defaultValue": "[concat(resourceGroup().name, 'Iothub')]",
             "type": "String"
         },
-        "location": {
+        "eventhubName": {
+            "defaultValue": "[concat(resourceGroup().name, 'Eventhub')]",
             "type": "String"
         },
-        "sku_name": {
-            "type": "String"
-        },
-        "sku_units": {
-            "type": "String"
-        },
-        "d2c_partitions": {
-            "type": "String"
-        },
-        "features": {
+        "storageaccountName": {
+            "defaultValue": "[concat(toLower(resourceGroup().name), 'sa')]",
             "type": "String"
         }
     },
     "resources": [
         {
             "type": "Microsoft.Devices/IotHubs",
+            "apiVersion": "2018-04-01",
+            "name": "[parameters('iothubName')]",
+            "location": "[resourceGroup().location]",
             "sku": {
-                "name": "[parameters('sku_name')]",
-                "capacity": "[parameters('sku_units')]"
+                "name": "S1",
+                "capacity": 2
             },
-            "name": "[parameters('name')]",
-            "apiVersion": "2018-12-01-preview",
-            "location": "[parameters('location')]",
+            "dependsOn":[
+            ],
             "properties": {
+                "operationsMonitoringProperties": {
+                    "events": {
+                        "None": "None",
+                        "Connections": "None",
+                        "DeviceTelemetry": "None",
+                        "C2DCommands": "None",
+                        "DeviceIdentityOperations": "None",
+                        "FileUploadOperations": "None",
+                        "Routes": "None"
+                    }
+                },
+                "ipFilterRules": [],
                 "eventHubEndpoints": {
                     "events": {
                         "retentionTimeInDays": 1,
-                        "partitionCount": "[parameters('d2c_partitions')]"
+                        "partitionCount": 2,
+                        "partitionIds": [
+                            "0",
+                            "1"
+                        ],
+                        "path": "iothub-ehub-testingver-1479073-8ba7af2b1f",
+                        "endpoint": "sb://ihsuprodamres063dednamespace.servicebus.windows.net/"
+                    },
+                    "operationsMonitoringEvents": {
+                        "retentionTimeInDays": 1,
+                        "partitionCount": 2,
+                        "partitionIds": [
+                            "0",
+                            "1"
+                        ],
+                        "path": "iothub-ehub-testingver-1479073-70949c7236",
+                        "endpoint": "sb://ihsuprodamres064dednamespace.servicebus.windows.net/"
                     }
                 },
-                "features": "[parameters('features')]"
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": [
+                            {
+                                "connectionString": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventhubName'), 'iothubeventhub', 'iothubroutesRoles'),'2015-08-01').primaryConnectionString]",
+                                "name": "enpointEventhub",
+                                "subscriptionId": "a6e10cb0-79e5-4b68-af13-d17fc5f7505a",
+                                "resourceGroup": "[resourceGroup().name]"
+                            }
+                        ],
+                        "storageContainers": [
+                            {
+                                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageaccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageaccountName')), '2016-01-01').keys[0].value,';EndpointSuffix=core.windows.net')]",
+                                "containerName": "iothubbackup",
+                                "fileNameFormat": "{iothub}/{partition}/{YYYY}-{MM}-{DD}-{HH}-{mm}",
+                                "batchFrequencyInSeconds": 100,
+                                "maxChunkSizeInBytes": 104857600,
+                                "encoding": "avro",
+                                "name": "endpointBlobStorage",
+                                "subscriptionId": "a6e10cb0-79e5-4b68-af13-d17fc5f7505a",
+                                "resourceGroup": "[resourceGroup().name]"
+                            }
+                        ]
+                    },
+                    "routes": [
+                        {
+                            "name": "routetoeventhub",
+                            "source": "TwinChangeEvents",
+                            "condition": "true",
+                            "endpointNames": [
+                                "enpointEventhub"
+                            ],
+                            "isEnabled": true
+                        },
+                        {
+                            "name": "routetoblob",
+                            "source": "DeviceMessages",
+                            "condition": "true",
+                            "endpointNames": [
+                                "endpointBlobStorage"
+                            ],
+                            "isEnabled": true
+                        }
+                    ],
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
+                "storageEndpoints": {
+                    "$default": {
+                        "sasTtlAsIso8601": "PT1H",
+                        "connectionString": "",
+                        "containerName": ""
+                    }
+                },
+                "messagingEndpoints": {
+                    "fileNotifications": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "enableFileUploadNotifications": false,
+                "cloudToDevice": {
+                    "maxDeliveryCount": 10,
+                    "defaultTtlAsIso8601": "PT1H",
+                    "feedback": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "features": "None"
             }
         }
     ]

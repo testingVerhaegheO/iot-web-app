@@ -5,9 +5,6 @@
         "name": {
             "value": "testingVerhaegheOIotHub"
         },
-        "location": {
-            "value": "westeurope"
-        },
         "sku_name": {
             "value": "F1"
         },

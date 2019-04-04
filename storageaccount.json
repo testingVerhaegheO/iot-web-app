@@ -1,0 +1,38 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageaccountName": {
+            "defaultValue": "[concat(toLower(resourceGroup().name), 'sa')]",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2018-07-01",
+            "name": "[parameters('storageaccountName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "BlobStorage",
+            "properties": {
+                "accessTier": "Cool",
+                "supportsHttpsTrafficOnly": "true"
+            },
+            "resources": [
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-07-01",
+                    "name": "default/iothubbackup",
+                    "dependsOn": [
+                        "[parameters('storageaccountName')]"
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -14,10 +14,6 @@
             "defaultValue": "testingVerhaegheO04eventhub",
             "type": "String"
         },
-        "alertrules_Failure_Anomalies___testingfunctionapp02AppInsights_name": {
-            "defaultValue": "Failure Anomalies - testingfunctionapp02AppInsights",
-            "type": "String"
-        },
         "components_testingfunctionapp02AppInsights_externalid": {
             "defaultValue": "/subscriptions/a6e10cb0-79e5-4b68-af13-d17fc5f7505a/resourceGroups/testingVerhaegheO04/providers/microsoft.insights/components/testingfunctionapp02AppInsights",
             "type": "String"
@@ -80,7 +76,7 @@
                         "serviceBusTopics": [],
                         "eventHubs": [
                             {
-                                "connectionString": "Endpoint=sb://testingverhaegheo04eventhub.servicebus.windows.net/;SharedAccessKeyName=iothubroutes_testingVerhaegheO04iothub;SharedAccessKey=f3hx5sGGLuf2pfBp3UyJvgDq5dA/W7Ke34mR2tllO7A=;EntityPath=iothubeventhub",
+                                "connectionString": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('namespaces_testingVerhaegheO04eventhub_name'), 'iothubeventhub', 'iothubroutes_testingVerhaegheO04iothub'),'2015-08-01').primaryConnectionString]",
                                 "name": "enpointEventhub",
                                 "subscriptionId": "a6e10cb0-79e5-4b68-af13-d17fc5f7505a",
                                 "resourceGroup": "testingVerhaegheO04"
@@ -88,7 +84,7 @@
                         ],
                         "storageContainers": [
                             {
-                                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=testingverhaegheo04sa;AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_testingverhaegheo04_name')), '2016-01-01').keys[0].value)]",
+                                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=testingverhaegheo04sa;AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_testingverhaegheo04_name')), '2016-01-01').keys[0].value,';EndpointSuffix=core.windows.net')]",
                                 "containerName": "iothubbackup",
                                 "fileNameFormat": "{iothub}/{partition}/{YYYY}/{MM}/{DD}/{HH}/{mm}",
                                 "batchFrequencyInSeconds": 100,
@@ -100,7 +96,26 @@
                             }
                         ]
                     },
-                    "routes": [],
+                    "routes": [
+                        {
+                            "name": "routetoeventhub",
+                            "source": "TwinChangeEvents",
+                            "condition": "true",
+                            "endpointNames": [
+                                "enpointEventhub"
+                            ],
+                            "isEnabled": true
+                        },
+                        {
+                            "name": "routetoblob",
+                            "source": "DeviceMessages",
+                            "condition": "true",
+                            "endpointNames": [
+                                "endpointBlobStorage"
+                            ],
+                            "isEnabled": true
+                        }
+                    ],
                     "fallbackRoute": {
                         "name": "$fallback",
                         "source": "DeviceMessages",
@@ -227,9 +242,17 @@
         }
     ],
     "outputs":{
-        "connectionString":{
+        "connectionStringSA":{
             "type": "String",
-            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=testingverhaegheo04sa;AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_testingverhaegheo04_name')), '2016-01-01').keys[0].value)]"
+            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=testingverhaegheo04sa;AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_testingverhaegheo04_name')), '2016-01-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
+        },
+        "connectionStringEH":{
+            "type": "String",
+            "value": "Endpoint=sb://testingverhaegheo04eventhub.servicebus.windows.net/;SharedAccessKeyName=iothubroutes_testingVerhaegheO04iothub;SharedAccessKey=f3hx5sGGLuf2pfBp3UyJvgDq5dA/W7Ke34mR2tllO7A=;EntityPath=iothubeventhub"
+        },
+        "connectionStringeh": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('namespaces_testingVerhaegheO04eventhub_name'), 'iothubeventhub', 'iothubroutes_testingVerhaegheO04iothub'),'2015-08-01').primaryConnectionString]"
         }
     } 
 }
