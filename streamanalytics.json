@@ -86,7 +86,7 @@
                     "blobPathPrefix": "cluster1/{client_id}",
                     "storageAccounts": [
                         {
-                            "accountName": "[concat(resourceGroup().name, 'sa')]"
+                            "accountName": "[concat(toLower(resourceGroup().name), 'sa')]"
                         }
                     ],
                     "container": "streamanalyticsbackup",
