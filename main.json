@@ -46,7 +46,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "iothub",
+            "name": "streamanalytics",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'iothub')]"
@@ -54,7 +54,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/testingVerhaegheO/iot-web-app/master/strealanalytics.json",
+                    "uri": "https://raw.githubusercontent.com/testingVerhaegheO/iot-web-app/master/streamanalytics.json",
                     "contentVersion": "1.0.0.0"
                 }
             }
