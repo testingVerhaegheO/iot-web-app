@@ -43,6 +43,21 @@
                     "contentVersion": "1.0.0.0"
                 }
             }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "iothub",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'iothub')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/testingVerhaegheO/iot-web-app/master/strealanalytics.json",
+                    "contentVersion": "1.0.0.0"
+                }
+            }
         }
     ]
 }

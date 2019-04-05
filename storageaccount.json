@@ -31,6 +31,22 @@
                     "dependsOn": [
                         "[parameters('storageaccountName')]"
                     ]
+                },
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-07-01",
+                    "name": "default/streamanalyticsbackup",
+                    "dependsOn": [  
+                        "[parameters('storageaccountName')]"
+                    ]
+                },
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-07-01",
+                    "name": "default/jobhostbackub",
+                    "dependsOn": [
+                        "[parameters('storageaccountName')]"
+                    ]
                 }
             ]
         }
