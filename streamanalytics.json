@@ -4,7 +4,7 @@
   "parameters": {
     "streamAnalyticsJobName": {
       "type": "string",
-      "defaultValue": "[concat(resourceGroupe().name,'StraemAnalyics')]",
+      "defaultValue": "[concat(resourceGroup().name,'StraemAnalyics')]",
       "metadata": {
         "description": "Stream Analytics Job Name, can contain alphanumeric characters and hypen and must be 3-63 characters long"
       }
