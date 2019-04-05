@@ -75,9 +75,9 @@
     {
         "type": "Microsoft.StreamAnalytics/streamingjobs/outputs",
         "apiVersion": "2016-03-01",
-        "name": "[concat(parameters('streamingjobs_StreamAnalyticsJobName_name'), '/streamblob')]",
+        "name": "[concat(parameters('streamAnalyticsJobName'), '/streamblob')]",
         "dependsOn": [
-            "[resourceId('Microsoft.StreamAnalytics/streamingjobs', parameters('streamingjobs_StreamAnalyticsJobName_name'))]"
+            "[resourceId('Microsoft.StreamAnalytics/streamingjobs', parameters('streamAnalyticsJobName'))]"
         ],
         "properties": {
             "datasource": {
