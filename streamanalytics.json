@@ -86,7 +86,8 @@
                     "blobPathPrefix": "cluster1/{client_id}",
                     "storageAccounts": [
                         {
-                            "accountName": "[concat(toLower(resourceGroup().name), 'sa')]"
+                            "accountName": "[concat(toLower(resourceGroup().name), 'sa')]",
+                            "accountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', concat(toLower(resourceGroup().name), 'sa')), '2016-01-01').keys[0].value]"
                         }
                     ],
                     "container": "streamanalyticsbackup",
