@@ -4,7 +4,7 @@
   "parameters": {
     "streamAnalyticsJobName": {
       "type": "string",
-      "defaultValue": "[concat(resourceGroup().name,'StraemAnalyics')]",
+      "defaultValue": "[concat(resourceGroup().name,'StreamAnalyics')]",
       "metadata": {
         "description": "Stream Analytics Job Name, can contain alphanumeric characters and hypen and must be 3-63 characters long"
       }
@@ -15,6 +15,14 @@
       "metadata": {
         "description": "Number of Streaming Units"
       }
+    },
+    "eventhubName": {
+        "defaultValue": "[concat(resourceGroup().name, 'Eventhub')]",
+        "type": "String"
+    },
+    "iothubName": {
+        "defaultValue": "[concat(resourceGroup().name, 'Iothub')]",
+        "type": "String"
     }
   },
   "resources": [
@@ -56,6 +64,7 @@
                 "properties": {
                     "iotHubNamespace": "[concat(resourceGroup().name, 'Iothub')]",
                     "sharedAccessPolicyName": "iothubowner",
+                    "sharedAccessPolicyKey": "[listKeys(resourceId('Microsoft.Devices/IotHubs', parameters('iotHubName')), '2016-02-03').value[0].primaryKey]",
                     "endpoint": "messages/events",
                     "consumerGroupName": "$Default"
                 }
@@ -93,8 +102,7 @@
                     "container": "streamanalyticsbackup",
                     "pathPattern": "cluster1/{client_id}",
                     "dateFormat": "yyyy/MM/dd",
-                    "timeFormat": "HH",
-                    "authenticationMode": "ConnectionString"
+                    "timeFormat": "HH"
                 }
             },
             "serialization": {
